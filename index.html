@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HBD Papa - Orchestra Tribute ✨</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Montserrat:wght@300;400;600&family=Caveat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #d4af37;
+            --gold-light: #f1d592;
+            --dark: #0a0a0b;
+            --glass: rgba(255, 255, 255, 0.1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--dark);
+            color: white;
+            font-family: 'Montserrat', sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- LAYAR PEMBUKA (KUE GOLD) --- */
+        #overlay {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(circle, #1a1a1a 0%, #000 100%);
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: 1.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .cake-container {
+            position: relative;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            transition: transform 0.4s ease;
+        }
+
+        .cake-container:hover {
+            transform: scale(1.05);
+        }
+
+        /* Badan Kue Gold */
+        .cake {
+            position: relative;
+            width: 160px;
+            height: 100px;
+            background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fcf6ba, #aa771c);
+            border-radius: 10px 10px 4px 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        /* Lelehan Krim & Dekorasi */
+        .cake::before {
+            content: "";
+            position: absolute;
+            width: 100%;
+            height: 40px;
+            background: #fff;
+            top: 0;
+            border-radius: 10px 10px 0 0;
+            clip-path: polygon(0 0, 100% 0, 100% 70%, 90% 90%, 80% 65%, 70% 95%, 60% 70%, 50% 100%, 40% 70%, 30% 90%, 20% 65%, 10% 85%, 0 65%);
+        }
+
+        /* Mutiara Dekorasi */
+        .decor {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            top: 15px;
+            box-shadow: 20px 0 #ff69b4, 50px 5px #7ed6df, 80px -2px #f0932b, 110px 6px #be2edd, 140px 0 #eb4d4b;
+        }
+
+        /* Lilin */
+        .candle {
+            width: 10px;
+            height: 45px;
+            background: linear-gradient(to bottom, #fff, var(--gold-light));
+            position: absolute;
+            top: -45px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .flame {
+            width: 16px;
+            height: 26px;
+            background: #ff9800;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: absolute;
+            top: -26px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: flicker 0.2s ease-in infinite;
+            box-shadow: 0 0 20px #ff9800, 0 0 40px rgba(255,152,0,0.6);
+        }
+
+        @keyframes flicker {
+            0%, 100% { transform: translateX(-50%) scale(1) rotate(-1deg); }
+            50% { transform: translateX(-50%) scale(1.1) rotate(1deg); }
+        }
+
+        .plate {
+            width: 220px;
+            height: 12px;
+            background: linear-gradient(to bottom, #e0e0e0, #999);
+            border-radius: 50%;
+            margin-top: -5px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .instruction {
+            margin-top: 40px;
+            color: var(--gold);
+            font-family: 'Playfair Display', serif;
+            letter-spacing: 3px;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
+
+        /* --- ANIMASI TEKS BERTAHAP --- */
+        .intro-text {
+            position: fixed;
+            font-size: 2.2rem;
+            font-family: 'Playfair Display', serif;
+            text-align: center;
+            width: 85%;
+            opacity: 0;
+            transform: scale(0.8);
+            filter: blur(10px);
+            pointer-events: none;
+            color: var(--gold-light);
+        }
+
+        /* --- KONTEN UTAMA --- */
+        #main-card {
+            display: none;
+            text-align: center;
+            z-index: 10;
+            max-width: 450px;
+            width: 90%;
+            padding: 40px 20px;
+            background: var(--glass);
+            backdrop-filter: blur(15px);
+            border-radius: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+            animation: cardAppear 1.5s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+        }
+
+        .photo-frame {
+            width: 160px;
+            height: 160px;
+            margin: 0 auto 25px;
+            border-radius: 50%;
+            border: 4px solid var(--gold);
+            padding: 6px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.3rem;
+            color: var(--gold);
+            margin-bottom: 15px;
+            text-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+        }
+
+        #typing-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #f0f0f0;
+            font-weight: 300;
+        }
+
+        @keyframes cardAppear {
+            from { opacity: 0; transform: translateY(40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+
+        .particles { position: fixed; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+        .show-intro { animation: fadeInOut 3.5s forwards; }
+
+        @keyframes fadeInOut {
+            0% { opacity: 0; transform: scale(0.8); filter: blur(10px); }
+            30% { opacity: 1; transform: scale(1); filter: blur(0); }
+            70% { opacity: 1; transform: scale(1); filter: blur(0); }
+            100% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+        }
+
+        .confetti {
+            position: absolute; width: 6px; height: 6px; background: var(--gold); border-radius: 50%;
+            animation: firework 2.5s ease-out forwards;
+        }
+        @keyframes firework {
+            0% { transform: translate(0, 0); opacity: 1; }
+            100% { transform: translate(var(--x), var(--y)); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio (Pastikan nama file MP3 benar) -->
+    <audio id="music">
+        <source src="Selamat Ulang Tahun (Orchestra Version) - Erwin Gutawa (Cipt. Adikarso).mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- Overlay Kue Gold -->
+    <div id="overlay">
+        <div class="cake-container" onclick="startJourney()">
+            <div class="candle">
+                <div class="flame"></div>
+            </div>
+            <div class="cake">
+                <div class="decor"></div>
+            </div>
+            <div class="plate"></div>
+            <p class="instruction">Ketuk Kue untuk Papa ✨</p>
+        </div>
+    </div>
+
+    <div id="t1" class="intro-text">Menghitung detik...</div>
+    <div id="t2" class="intro-text">Menyusun nada indah...</div>
+    <div id="t3" class="intro-text">Untuk Papa yang luar biasa...</div>
+    <div id="t4" class="intro-text">Hari ini adalah hari istimewamu.</div>
+
+    <canvas class="particles" id="canvas"></canvas>
+
+    <!-- Kartu Utama -->
+    <div id="main-card">
+        <div class="photo-frame">
+            <img src="VW Safari 2.jpg" alt="Papa">
+        </div>
+        <h1>Happy Birthday!</h1>
+        <div id="typing-text"></div>
+        <div style="margin-top: 30px; font-family: 'Caveat', cursive; font-size: 1.8rem; color: var(--gold);">
+            With Love, Papa
+        </div>
+    </div>
+
+    <script>
+        const music = document.getElementById('music');
+        const overlay = document.getElementById('overlay');
+        const mainCard = document.getElementById('main-card');
+        const typingElement = document.getElementById('typing-text');
+        const message = "Seperti sebuah orkestra 🎻, hidup kami berjalan indah karena arahanmu. Papa adalah dirigen yang menyatukan setiap nada menjadi harmoni keluarga 🎶 Semoga selalu sehat 💙, bahagia, dan setiap langkah Papa diiringi doa serta cinta kami ✨";
+
+        async function startJourney() {
+            // Animasi "Tiup" lilin (hilangkan api)
+            document.querySelector('.flame').style.transition = '0.5s';
+            document.querySelector('.flame').style.opacity = '0';
+            document.querySelector('.flame').style.transform = 'translateX(-50%) scale(0)';
+
+            setTimeout(async () => {
+                // Sembunyikan Overlay
+                overlay.style.opacity = '0';
+                setTimeout(() => overlay.style.display = 'none', 1500);
+
+                // Putar Musik
+                music.play().catch(e => console.log("Musik butuh interaksi user"));
+
+                // Intro Sequence
+                await showIntroText('t1', 3000);
+                await showIntroText('t2', 3000);
+                await showIntroText('t3', 3000);
+                await showIntroText('t4', 3500);
+
+                // Munculkan Kartu
+                mainCard.style.display = 'block';
+                startGoldRain();
+                typeWriter(0);
+                
+                // Kembang api saat kartu muncul
+                setTimeout(createFirework, 500);
+            }, 800);
+        }
+
+        function showIntroText(id, delay) {
+            return new Promise(resolve => {
+                const el = document.getElementById(id);
+                el.classList.add('show-intro');
+                setTimeout(() => {
+                    el.classList.remove('show-intro');
+                    resolve();
+                }, delay);
+            });
+        }
+
+        function typeWriter(i) {
+            if (i < message.length) {
+                typingElement.innerHTML += message.charAt(i);
+                setTimeout(() => typeWriter(i + 1), 60);
+            }
+        }
+
+        // Particle System (Hujan Emas)
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function startGoldRain() {
+            const particles = [];
+            for (let i = 0; i < 120; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3 + 1,
+                    speed: Math.random() * 2 + 1,
+                    opacity: Math.random()
+                });
+            }
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                particles.forEach(p => {
+                    ctx.fillStyle = `rgba(212, 175, 55, ${p.opacity})`;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                    p.y += p.speed;
+                    if (p.y > canvas.height) p.y = -10;
+                });
+                requestAnimationFrame(animate);
+            }
+            animate();
+        }
+
+        function createFirework() {
+            for(let i=0; i<40; i++) {
+                const conf = document.createElement('div');
+                conf.classList.add('confetti');
+                const x = (Math.random() - 0.5) * 350;
+                const y = (Math.random() - 0.5) * 350;
+                conf.style.setProperty('--x', `${x}px`);
+                conf.style.setProperty('--y', `${y}px`);
+                conf.style.left = '50%';
+                conf.style.top = '40%';
+                document.body.appendChild(conf);
+                setTimeout(() => conf.remove(), 2500);
+            }
+        }
+    </script>
+</body>
+</html>
